@@ -56,6 +56,8 @@ public class Snake {
         } else 
             body.remove(body.size() - 1);
         
+        
+        
         //delete body
 //        getBody().remove(getBody().size() -1 );
         
