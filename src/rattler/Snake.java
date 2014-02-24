@@ -13,61 +13,58 @@ import static rattler.Direction.UP;
  * @author Owner
  */
 public class Snake {
+
     private ArrayList<Point> body;
     private Direction direction = Direction.RIGHT;
+
     {
         setBody(new ArrayList<Point>());
-        
+
     }
     private int growthCounter = 0;
-    
-    public void move(){
+
+    public void move() {
         //create a new location for the head, using the direction
         int x = 0;
         int y = 0;
-        
-        switch (getDirection()){
+
+        switch (getDirection()) {
             case UP:
                 x = 0;
                 y = -1;
                 break;
-                  
+
             case DOWN:
                 x = 0;
                 y = 1;
                 break;
-                
+
             case RIGHT:
                 x = 1;
                 y = 0;
                 break;
-               
+
             case LEFT:
                 x = -1;
                 y = 0;
-                    
+
         }
-        
-        
-        getBody().add(0, new Point(getHead().x + x,getHead().y + y));
-        
-        if (growthCounter > 0){
-            growthCounter --;
-        } else 
+
+
+        getBody().add(0, new Point(getHead().x + x, getHead().y + y));
+
+        if (growthCounter > 0) {
+            growthCounter--;
+        } else {
             body.remove(body.size() - 1);
-        
-        
-        
-        //delete body
-//        getBody().remove(getBody().size() -1 );
-        
-        
-        
+        }
+
     }
-     public Point getHead(){
-         return getBody().get(0);
-     }
-     
+
+    public Point getHead() {
+        return getBody().get(0);
+    }
+
     /**
      * @return the body
      */
@@ -80,6 +77,22 @@ public class Snake {
      */
     public void setBody(ArrayList<Point> body) {
         this.body = body;
+    }
+
+    public Point getTail() {
+        return body.get(body.size() - 1);
+
+    }
+
+    public boolean selfHitTest() {
+        for (int i = 1; i < body.size(); i++) {
+            if (body.get(i).equals(getHead())){
+                return true;
+            }
+                     
+        }
+            
+        return false;
     }
 
     /**
@@ -109,10 +122,12 @@ public class Snake {
     public void setGrowthCounter(int growthCounter) {
         this.growthCounter = growthCounter;
     }
-    
+
     public void addGrowthCounter(int growthCounter) {
         this.growthCounter += growthCounter;
     }
-    
-    
+
+    void grow(int growth) {
+        addGrowthCounter(growth);
+    }
 }
