@@ -30,7 +30,7 @@ class SnakeEnvironment extends Environment {
     // private ArrayList<Point> myImage;
     private ArrayList<Point> poisonBottles;
     private int speed = 11;
-    private int moveCounter = speed;
+    private int moveCounter = getSpeed();
     private ArrayList<Point> brokenhearts;
     private ArrayList<Point> hearts;
     private Image heart;
@@ -103,11 +103,11 @@ class SnakeEnvironment extends Environment {
         this.snake.getBody().add(new Point(5, 4));
         this.snake.getBody().add(new Point(5, 3));
         this.snake.getBody().add(new Point(4, 3));
-        
+
 //        AudioPlayer.play("resources/Amazed.mp3");
-          AudioPlayer.play("/resources/heartbreak_warfare.wav");
-        
-        
+        AudioPlayer.play("/resources/heartbreak_warfare.wav");
+
+
 
     }
 
@@ -123,16 +123,17 @@ class SnakeEnvironment extends Environment {
             if (snake != null) {
                 if (moveCounter <= 0) {
                     snake.move();
-                    moveCounter = speed;
-                    speed = 2;
+                    moveCounter = getSpeed();
+//                    speed = 2;
                     checkSnakeIntersection();
-                    if (snake.selfHitTest()){
+                    if (snake.selfHitTest()) {
                         gameState = GameState.ENDED;
                     }
                 } else {
                     moveCounter--;
                 }
-            } if (snake.getHead().x < 0) {
+            }
+            if (snake.getHead().x < 0) {
                 snake.getHead().x = grid.getColumns();
             } else if (snake.getHead().x > grid.getColumns()) {
                 snake.getHead().x = 0;
@@ -167,7 +168,7 @@ class SnakeEnvironment extends Environment {
         } else if (e.getKeyCode() == KeyEvent.VK_G) {
             snake.setGrowthCounter(2);
         } else if (e.getKeyCode() == KeyEvent.VK_P) {
-            this.score += 57;
+            this.setScore(this.getScore() + 57);
             //AudioPlayer.play("/resources/heartbreak_warfare.wav");
 //            AudioPlayer.play("/resources/Heaven.wav");
 
@@ -246,7 +247,7 @@ class SnakeEnvironment extends Environment {
 
             graphics.setColor(Color.red);
             graphics.setFont(new Font("Calibri", Font.BOLD, 30));
-            graphics.drawString("Score: " + this.score, 550, 90);
+            graphics.drawString("Score: " + this.getScore(), 550, 90);
             graphics.setFont(new Font("Calibri", Font.BOLD, 25));
             graphics.drawString("   Collect the hearts, avoid the broken hearts,  ", 345, 30);
             //for extra points! Hit too many broken hearts and the game is over.
@@ -274,10 +275,10 @@ class SnakeEnvironment extends Environment {
         for (int i = 0; i < this.hearts.size(); i++) {
             if (snake.getHead().equals(this.hearts.get(i))) {
                 System.out.println("APPLE Chomp!!!");
-                this.score += 10;
+                this.setScore(this.getScore() + 10);
                 //move the heart to a new location
                 this.hearts.get(i).setLocation(getRandomGridLocation());
-                
+
 
             }
         }
@@ -285,8 +286,9 @@ class SnakeEnvironment extends Environment {
         for (int i = 0; i < this.brokenhearts.size(); i++) {
             if (snake.getHead().equals(this.brokenhearts.get(i))) {
                 System.out.println("BOOM!!!");
-                this.score -= 15;
+                this.setScore(this.getScore() - 15);
                 snake.grow(1);
+//                snake.
                 //  this.snake.getBody() += snake.getBody();
 
                 this.brokenhearts.get(i).setLocation(getRandomGridLocation());
@@ -304,4 +306,47 @@ class SnakeEnvironment extends Environment {
         }
     }
 
+    /**
+     * @return the score
+     */
+    public int getScore() {
+        return score;
+    }
+
+    /**
+     * @param newScore the score to set
+     */
+    public void setScore(int newScore) {
+        if ((this.score < 30) && (newScore >= 30)) {
+            this.setSpeed(6);
+        } else if ((this.score < 60) && (newScore >= 60)) {
+            this.setSpeed(4);
+        } else if ((this.score < 90) && (newScore >= 90)) {
+            this.setSpeed(2);
+        } else if ((this.score < 150) && (newScore >= 150)) {
+            this.setSpeed(1);
+        }
+
+        this.score = newScore;
+    }
+    
+
+    /**
+     * @return the speed
+     */
+    public int getSpeed() {
+        return speed;
+    }
+
+    /**
+     * @param speed the speed to set
+     */
+    public void setSpeed(int speed) {
+        this.speed = speed;
+        System.out.println("speed up");
+        //sound
+        AudioPlayer.play("/resources/Heartbeat.wav");
+        
+
+    }
 }
