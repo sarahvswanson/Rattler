@@ -4,6 +4,7 @@
  */
 package rattler;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.util.ArrayList;
 import static rattler.Direction.UP;
@@ -16,12 +17,14 @@ public class Snake {
 
     private ArrayList<Point> body;
     private Direction direction = Direction.RIGHT;
+    private Color bodyColor;
 
     {
         setBody(new ArrayList<Point>());
 
     }
     private int growthCounter = 0;
+   
 
     public void move() {
         //create a new location for the head, using the direction
@@ -130,4 +133,12 @@ public class Snake {
     void grow(int growth) {
         addGrowthCounter(growth);
     }
+
+    public void setBodyColor(Color bodyColor) {
+        this.bodyColor = bodyColor;
+    }
+    public Color getBodyColor() {
+        return bodyColor;
+    }
+    
 }

@@ -35,7 +35,9 @@ class SnakeEnvironment extends Environment {
     private ArrayList<Point> hearts;
     private Image heart;
     private Image brokenheart;
-    private GameState gameState = GameState.PAUSED;
+    private GameState gameState = GameState.RUNNING;
+    private Image teardrop;
+    private ArrayList<Point> teardrops;
 
     public SnakeEnvironment() {
 //        loadImage();
@@ -47,6 +49,10 @@ class SnakeEnvironment extends Environment {
         this.setBackground(ResourceTools.loadImageFromResource("resources/forrest.png"));
         this.heart = ResourceTools.loadImageFromResource("resources/redheart.png");
         this.brokenheart = ResourceTools.loadImageFromResource("resources/brokenheart.png");
+        this.teardrop = ResourceTools.loadImageFromResource("resources/teardrop.png");
+
+
+
 
 
         this.grid = new Grid();
@@ -97,12 +103,22 @@ class SnakeEnvironment extends Environment {
         this.brokenhearts.add(new Point(31, 14));
         this.brokenhearts.add(new Point(33, 4));
 
+        this.teardrops = new ArrayList<Point>();
+        this.teardrops.add(new Point(20, 4));
+        this.teardrops.add(new Point(5, 14));
+        this.teardrops.add(new Point(10, 20));
+        this.teardrops.add(new Point(36, 18));
+        this.teardrops.add(new Point(30, 12));
+        this.teardrops.add(new Point(28, 14));
+        
         this.snake = new Snake();
-
+        this.snake.setBodyColor(new Color(220, 20, 60));
         this.snake.getBody().add(new Point(5, 5));
         this.snake.getBody().add(new Point(5, 4));
         this.snake.getBody().add(new Point(5, 3));
         this.snake.getBody().add(new Point(4, 3));
+        this.snake.getBody().add(new Point(4, 2));
+        this.snake.getBody().add(new Point(4, 1));
 
 //        AudioPlayer.play("resources/Amazed.mp3");
         AudioPlayer.play("/resources/heartbreak_warfare.wav");
@@ -213,8 +229,17 @@ class SnakeEnvironment extends Environment {
                         graphics.drawImage(brokenheart, cellPosition.x, cellPosition.y, this.grid.getCellWidth(), this.grid.getCellHeight(), this);
 
                     }
-
                 }
+                if (this.teardrops != null) {
+                    for (int i = 0; i < this.teardrops.size(); i++) {
+                        //this.brokenhearts.get(i);
+                        Point cellPosition = this.grid.getCellPosition(this.teardrops.get(i));
+                        graphics.drawImage(teardrop, cellPosition.x, cellPosition.y, this.grid.getCellWidth(), this.grid.getCellHeight(), this);
+
+                    }
+                }
+
+
                 if (this.poisonBottles != null) {
                     for (int i = 0; i < this.poisonBottles.size(); i++) {
                         this.poisonBottles.get(i);
@@ -222,23 +247,17 @@ class SnakeEnvironment extends Environment {
                     }
                 }
 
-
-
                 Point cellLocation;
-                graphics.setColor(Color.blue);
-
+//                graphics.setColor(Color.blue);
                 if (snake != null) {
                     for (int i = 0; i < snake.getBody().size(); i++) {
                         if (i == 0) {
-                            graphics.setColor(new Color(220, 20, 60));
+                            graphics.setColor(snake.getBodyColor());
                         } else {
-                            graphics.setColor(new Color(220, 20, 60));
+                            graphics.setColor(snake.getBodyColor());
                         }
-
                         cellLocation = grid.getCellPosition(snake.getBody().get(i));
-
                         graphics.fillOval(cellLocation.x, cellLocation.y, grid.getCellWidth(), grid.getCellHeight());
-
                     }
                 }
             }
@@ -274,36 +293,38 @@ class SnakeEnvironment extends Environment {
 
         for (int i = 0; i < this.hearts.size(); i++) {
             if (snake.getHead().equals(this.hearts.get(i))) {
-                System.out.println("APPLE Chomp!!!");
+                //System.out.println("APPLE Chomp!!!");
                 this.setScore(this.getScore() + 10);
+                this.speed = 4;
                 //move the heart to a new location
                 this.hearts.get(i).setLocation(getRandomGridLocation());
-
-
+                this.snake.setBodyColor(new Color(220, 20, 60));
             }
         }
 
         for (int i = 0; i < this.brokenhearts.size(); i++) {
             if (snake.getHead().equals(this.brokenhearts.get(i))) {
-                System.out.println("BOOM!!!");
+                //System.out.println("BOOM!!!");
                 this.setScore(this.getScore() - 15);
                 snake.grow(1);
-//                snake.
-                //  this.snake.getBody() += snake.getBody();
-
                 this.brokenhearts.get(i).setLocation(getRandomGridLocation());
-
             }
         }
 
         for (int i = 0; i < this.poisonBottles.size(); i++) {
-
             if (snake.getHead().equals(this.poisonBottles.get(i))) {
                 this.gameState = GameState.ENDED;
-                //System.out.println("Gulppppp..");
-
             }
         }
+        for (int k = 0; k < this.teardrops.size(); k++) {
+            if (snake.getHead().equals(this.teardrops.get(k))) {
+                snake.setBodyColor(Color.blue);
+                this.score -= 10;
+                this.teardrops.get(k).setLocation(getRandomGridLocation());
+                this.speed = 1;
+            }
+        }
+
     }
 
     /**
@@ -329,7 +350,6 @@ class SnakeEnvironment extends Environment {
 
         this.score = newScore;
     }
-    
 
     /**
      * @return the speed
@@ -346,7 +366,7 @@ class SnakeEnvironment extends Environment {
         System.out.println("speed up");
         //sound
         AudioPlayer.play("/resources/Heartbeat.wav");
-        
+
 
     }
 }
