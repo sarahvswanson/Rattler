@@ -52,9 +52,6 @@ class SnakeEnvironment extends Environment {
         this.teardrop = ResourceTools.loadImageFromResource("resources/teardrop.png");
 
 
-
-
-
         this.grid = new Grid();
 //        this.grid.setColor(new Color(34, 139, 34));
         this.grid.setColor(new Color(192, 192, 192));
@@ -110,7 +107,7 @@ class SnakeEnvironment extends Environment {
         this.teardrops.add(new Point(36, 18));
         this.teardrops.add(new Point(30, 12));
         this.teardrops.add(new Point(28, 14));
-        
+
         this.snake = new Snake();
         this.snake.setBodyColor(new Color(220, 20, 60));
         this.snake.getBody().add(new Point(5, 5));
@@ -119,19 +116,14 @@ class SnakeEnvironment extends Environment {
         this.snake.getBody().add(new Point(4, 3));
         this.snake.getBody().add(new Point(4, 2));
         this.snake.getBody().add(new Point(4, 1));
-
 //        AudioPlayer.play("resources/Amazed.mp3");
         AudioPlayer.play("/resources/heartbreak_warfare.wav");
-
-
-
     }
 
     private Point getRandomGridLocation() {
         return new Point((int) (Math.random() * this.grid.getColumns()), (int) (Math.random() * this.grid.getRows()));
 
     }
-
     @Override
     public void timerTaskHandler() {
         //System.out.println("Timer");
@@ -187,13 +179,9 @@ class SnakeEnvironment extends Environment {
             this.setScore(this.getScore() + 57);
             //AudioPlayer.play("/resources/heartbreak_warfare.wav");
 //            AudioPlayer.play("/resources/Heaven.wav");
-
         } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             gameState = GameState.ENDED;
         }
-
-
-
     }
 
     @Override
@@ -218,16 +206,13 @@ class SnakeEnvironment extends Environment {
             if (this.hearts != null) {
                 for (int i = 0; i < this.hearts.size(); i++) {
                     Point cellPosition = this.grid.getCellPosition(this.hearts.get(i));
-
                     graphics.drawImage(heart, cellPosition.x, cellPosition.y, this.grid.getCellWidth(), this.grid.getCellHeight(), this);
-
                 }
                 if (this.brokenhearts != null) {
                     for (int i = 0; i < this.brokenhearts.size(); i++) {
                         //this.brokenhearts.get(i);
                         Point cellPosition = this.grid.getCellPosition(this.brokenhearts.get(i));
                         graphics.drawImage(brokenheart, cellPosition.x, cellPosition.y, this.grid.getCellWidth(), this.grid.getCellHeight(), this);
-
                     }
                 }
                 if (this.teardrops != null) {
@@ -235,11 +220,8 @@ class SnakeEnvironment extends Environment {
                         //this.brokenhearts.get(i);
                         Point cellPosition = this.grid.getCellPosition(this.teardrops.get(i));
                         graphics.drawImage(teardrop, cellPosition.x, cellPosition.y, this.grid.getCellWidth(), this.grid.getCellHeight(), this);
-
                     }
                 }
-
-
                 if (this.poisonBottles != null) {
                     for (int i = 0; i < this.poisonBottles.size(); i++) {
                         this.poisonBottles.get(i);
@@ -262,26 +244,27 @@ class SnakeEnvironment extends Environment {
                 }
             }
             //GraphicsPalette.drawApple(graphics, new Point(100, 100), new Point(100, 100));
-
-
-            graphics.setColor(Color.red);
             graphics.setFont(new Font("Calibri", Font.BOLD, 30));
-            graphics.drawString("Score: " + this.getScore(), 550, 90);
+            graphics.setColor(Color.red);
+            graphics.drawString("Score: " + this.getScore(), 551, 121);
+            graphics.setColor(Color.white);
+            graphics.drawString("Score: " + this.getScore(), 550, 120);
             graphics.setFont(new Font("Calibri", Font.BOLD, 25));
+            graphics.setColor(Color.white);
+            graphics.drawString("   Collect the hearts, avoid the broken hearts,  ", 346, 31);
+            graphics.drawString("and die with the love potions or if you hit yourself. ", 346, 61);
+            graphics.drawString("If you hit a tear you will be punished. ", 346, 91);
+            graphics.setColor(Color.red);
             graphics.drawString("   Collect the hearts, avoid the broken hearts,  ", 345, 30);
-            //for extra points! Hit too many broken hearts and the game is over.
             graphics.drawString("and die with the love potions or if you hit yourself. ", 345, 60);
+            graphics.drawString("If you hit a tear you will be punished. ", 345, 90);
             graphics.setColor(Color.white);
             graphics.setFont(new Font("Calibri", Font.BOLD, 40));
             graphics.drawString("Rattle Your Love ", 40, 60);
-
-
             if (gameState == GameState.ENDED) {
                 graphics.setColor(Color.red);
                 graphics.setFont(new Font("Calibri", Font.BOLD, 80));
                 graphics.drawString("GAME OVER!", 200, 250);
-
-
             }
         }
     }
@@ -295,19 +278,22 @@ class SnakeEnvironment extends Environment {
             if (snake.getHead().equals(this.hearts.get(i))) {
                 //System.out.println("APPLE Chomp!!!");
                 this.setScore(this.getScore() + 10);
-                this.speed = 4;
+
                 //move the heart to a new location
                 this.hearts.get(i).setLocation(getRandomGridLocation());
                 this.snake.setBodyColor(new Color(220, 20, 60));
+                this.setSpeed(getSpeedFromScore(this.score));
             }
         }
 
         for (int i = 0; i < this.brokenhearts.size(); i++) {
             if (snake.getHead().equals(this.brokenhearts.get(i))) {
                 //System.out.println("BOOM!!!");
-                this.setScore(this.getScore() - 15);
+                this.setScore(this.getScore() - 10);
                 snake.grow(1);
                 this.brokenhearts.get(i).setLocation(getRandomGridLocation());
+                this.snake.setBodyColor(new Color(220, 20, 60));
+                this.setSpeed(getSpeedFromScore(this.score));
             }
         }
 
@@ -338,17 +324,37 @@ class SnakeEnvironment extends Environment {
      * @param newScore the score to set
      */
     public void setScore(int newScore) {
-        if ((this.score < 30) && (newScore >= 30)) {
-            this.setSpeed(6);
-        } else if ((this.score < 60) && (newScore >= 60)) {
-            this.setSpeed(4);
-        } else if ((this.score < 90) && (newScore >= 90)) {
-            this.setSpeed(2);
-        } else if ((this.score < 150) && (newScore >= 150)) {
-            this.setSpeed(1);
-        }
-
+//        if ((this.score < 30) && (newScore >= 30)) {
+//            this.setSpeed(6);
+//        } else if ((this.score < 60) && (newScore >= 60)) {
+//            this.setSpeed(4);
+//        } else if ((this.score < 90) && (newScore >= 90)) {
+//            this.setSpeed(2);
+//        } else if ((this.score < 120) && (newScore >= 120)) {
+//            this.setSpeed(1);
+//        } else if ((this.score < 150) && (newScore >= 150)) {
+//            this.setSpeed(-1);
+//        }else if ((this.score < 200) && (newScore >= 200)) {
+//            this.setSpeed(-3);
+//        }
+        this.setSpeed(getSpeedFromScore(newScore));
         this.score = newScore;
+    }
+
+    private int getSpeedFromScore(int currentScore) {
+        if ((currentScore >= 0) && (currentScore < 30)) {
+            return 6;
+        } else if ((currentScore >= 30) && (currentScore < 60)) {
+            return 4;
+        } else if ((currentScore >= 60) && (currentScore < 110)) {
+            return 2;
+        } else if ((currentScore >= 110) && (currentScore < 150)) {
+            return 1;
+        } else if (currentScore >= 150) {
+            return 0;
+        } else {
+            return 6;
+        }
     }
 
     /**
@@ -357,7 +363,6 @@ class SnakeEnvironment extends Environment {
     public int getSpeed() {
         return speed;
     }
-
     /**
      * @param speed the speed to set
      */
@@ -366,7 +371,5 @@ class SnakeEnvironment extends Environment {
         System.out.println("speed up");
         //sound
         AudioPlayer.play("/resources/Heartbeat.wav");
-
-
     }
 }
