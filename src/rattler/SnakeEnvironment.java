@@ -276,9 +276,7 @@ class SnakeEnvironment extends Environment {
 
         for (int i = 0; i < this.hearts.size(); i++) {
             if (snake.getHead().equals(this.hearts.get(i))) {
-                //System.out.println("APPLE Chomp!!!");
                 this.setScore(this.getScore() + 10);
-
                 //move the heart to a new location
                 this.hearts.get(i).setLocation(getRandomGridLocation());
                 this.snake.setBodyColor(new Color(220, 20, 60));
@@ -294,6 +292,7 @@ class SnakeEnvironment extends Environment {
                 this.brokenhearts.get(i).setLocation(getRandomGridLocation());
                 this.snake.setBodyColor(new Color(220, 20, 60));
                 this.setSpeed(getSpeedFromScore(this.score));
+                AudioPlayer.play("/resources/Heartbeat.wav");
             }
         }
 
@@ -308,6 +307,7 @@ class SnakeEnvironment extends Environment {
                 this.score -= 10;
                 this.teardrops.get(k).setLocation(getRandomGridLocation());
                 this.speed = 1;
+                AudioPlayer.play("/resources/BabyCrying.wav");
             }
         }
 
@@ -370,6 +370,6 @@ class SnakeEnvironment extends Environment {
         this.speed = speed;
         System.out.println("speed up");
         //sound
-        AudioPlayer.play("/resources/Heartbeat.wav");
+        //AudioPlayer.play("/resources/Heartbeat.wav");
     }
 }
